@@ -9,6 +9,7 @@ import streamlit as st
 st.set_page_config(page_title="Happiness Dashboard", layout="wide")
 
 DATASET_PATH = Path("data/dashboard_dataset.csv")
+DESCRIPTION_PATH = Path("description.md")
 
 METRICS = {
     "Happiness rank": {
@@ -58,6 +59,12 @@ def load_dataset(path: Path) -> pd.DataFrame:
 
 
 st.title("World Happiness Map")
+
+if DESCRIPTION_PATH.exists():
+    with st.expander("About this dashboard", expanded=True):
+        st.markdown(DESCRIPTION_PATH.read_text(encoding="utf-8"))
+else:
+    st.info(f"Description file not found: {DESCRIPTION_PATH}")
 
 if not DATASET_PATH.exists():
     st.error(f"Dataset not found: {DATASET_PATH}")
