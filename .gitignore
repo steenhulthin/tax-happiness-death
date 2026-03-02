@@ -1,3 +1,72 @@
-/.venv
-/.vscode
-/data
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.pytest_cache/
+
+# Type checkers / linters
+.mypy_cache/
+.pyre/
+.ruff_cache/
+.pytype/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environments
+.env
+.env.*
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Local settings / secrets
+*.local
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# OS files
+.DS_Store
+Thumbs.db
