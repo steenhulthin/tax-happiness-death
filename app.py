@@ -23,6 +23,12 @@ METRICS = {
         "ascending_good": False,
         "color_scale": "YlGnBu",
     },
+    "SDG index score": {
+        "column": "sdg_index_score",
+        "label": "SDG index score",
+        "ascending_good": False,
+        "color_scale": "Viridis",
+    },
 }
 
 
@@ -60,7 +66,7 @@ if not DATASET_PATH.exists():
 
 df = load_dataset(DATASET_PATH)
 
-countries = sorted(df["country"].dropna().unique().tolist())
+countries = ["All countries"] + sorted(df["country"].dropna().unique().tolist())
 selected_country = st.selectbox(
     "Country",
     options=countries,
@@ -101,7 +107,7 @@ else:
     )
 
     selected_row = plot_df[plot_df["country"] == selected_country]
-    if not selected_row.empty:
+    if selected_country != "All countries" and not selected_row.empty:
         map_fig.add_trace(
             go.Choropleth(
                 locations=selected_row["iso3"],
@@ -121,10 +127,20 @@ else:
     )
     st.plotly_chart(map_fig, use_container_width=True)
 
-country_series = df[df["country"] == selected_country].sort_values("year")
-country_series = country_series.dropna(subset=[metric_col, "year"])
+if selected_country == "All countries":
+    country_series = (
+        df.dropna(subset=[metric_col, "year"])
+        .groupby("year", as_index=False)[metric_col]
+        .mean()
+        .sort_values("year")
+    )
+    series_title = f"All countries average: {metric_config['label']} Over Time"
+else:
+    country_series = df[df["country"] == selected_country].sort_values("year")
+    country_series = country_series.dropna(subset=[metric_col, "year"])
+    series_title = f"{selected_country}: {metric_config['label']} Over Time"
 
-st.subheader(f"{selected_country}: {metric_config['label']} Over Time")
+st.subheader(series_title)
 
 if country_series.empty:
     st.warning("No time-series data available for the selected country and metric.")
@@ -143,3 +159,53 @@ else:
         line_fig.update_yaxes(autorange="reversed")
 
     st.plotly_chart(line_fig, use_container_width=True)
+
+st.subheader("Happiness Rank vs SDG Index Score")
+
+scatter_df = year_df.dropna(subset=["happiness_rank", "sdg_index_score"]).copy()
+if scatter_df.empty:
+    st.warning("No scatterplot data for the selected year.")
+else:
+    scatter_fig = px.scatter(
+        scatter_df,
+        x="sdg_index_score",
+        y="happiness_rank",
+        hover_name="country",
+        labels={
+            "sdg_index_score": "SDG index score",
+            "happiness_rank": "Happiness rank",
+        },
+        opacity=0.8,
+    )
+    scatter_fig.update_traces(marker=dict(size=9, color="#4E79A7"))
+
+    if selected_country != "All countries":
+        selected_scatter = scatter_df[scatter_df["country"] == selected_country]
+        if not selected_scatter.empty:
+            scatter_fig.add_trace(
+                go.Scatter(
+                    x=selected_scatter["sdg_index_score"],
+                    y=selected_scatter["happiness_rank"],
+                    mode="markers",
+                    marker=dict(size=14, color="#D62828", line=dict(color="black", width=1)),
+                    name=selected_country,
+                    hovertemplate=(
+                        "<b>%{text}</b><br>SDG index score: %{x:.2f}<br>"
+                        "Happiness rank: %{y:.0f}<extra></extra>"
+                    ),
+                    text=selected_scatter["country"],
+                )
+            )
+
+    scatter_fig.update_layout(margin=dict(l=0, r=0, t=20, b=0))
+    scatter_fig.update_yaxes(autorange="reversed")
+    st.plotly_chart(scatter_fig, use_container_width=True)
+
+st.markdown("---")
+st.caption(
+    "Data sources: "
+    "[World Happiness Report 2025 data](https://files.worldhappiness.report/WHR25_Data_Figure_2.1v3.xlsx) "
+    "(sheet: Data for Figure 2.1) and "
+    "[Sustainable Development Report 2025 data](https://dashboards.sdgindex.org/static/downloads/files/SDR2025-data.xlsx) "
+    "(sheet: Backdated SDG Index)."
+)
