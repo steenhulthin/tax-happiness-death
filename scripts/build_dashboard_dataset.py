@@ -81,6 +81,7 @@ def build_dataset() -> pd.DataFrame:
     whr["life_evaluation_3yr_avg"] = pd.to_numeric(
         whr["life_evaluation_3yr_avg"], errors="coerce"
     )
+    whr = whr[whr["year"] != 2024].copy()
     whr["country_key"] = whr["country"].map(normalize_country)
 
     tax = pd.read_excel(
@@ -92,6 +93,7 @@ def build_dataset() -> pd.DataFrame:
     )
     tax["year"] = pd.to_numeric(tax["year"], errors="coerce").astype("Int64")
     tax["tax_revenue_excl_sc"] = pd.to_numeric(tax["tax_revenue_excl_sc"], errors="coerce")
+    tax = tax[tax["year"] != 2024].copy()
     tax["country_key"] = tax["country_tax"].map(normalize_country)
     tax["iso3"] = tax["iso3"].astype(str).str.strip().str.upper()
 
