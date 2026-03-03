@@ -222,5 +222,6 @@ st.caption(
     "[World Happiness Report 2025 data](https://files.worldhappiness.report/WHR25_Data_Figure_2.1v3.xlsx) "
     "(sheet: Data for Figure 2.1) and "
     "[Sustainable Development Report 2025 data](https://dashboards.sdgindex.org/static/downloads/files/SDR2025-data.xlsx) "
-    "(sheet: Backdated SDG Index)."
+    "(sheet: Backdated SDG Index). "
+    "License: [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html#license-text)."
 )
