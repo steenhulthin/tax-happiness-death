@@ -24,9 +24,9 @@ METRICS = {
         "ascending_good": False,
         "color_scale": "YlGnBu",
     },
-    "SDG index score": {
-        "column": "sdg_index_score",
-        "label": "SDG index score",
+    "Tax revenue (excluding social contributions)": {
+        "column": "tax_revenue_excl_sc",
+        "label": "Tax revenue (excluding social contributions)",
         "ascending_good": False,
         "color_scale": "Viridis",
     },
@@ -42,7 +42,7 @@ def load_dataset(path: Path) -> pd.DataFrame:
         "year",
         "happiness_rank",
         "life_evaluation_3yr_avg",
-        "sdg_index_score",
+        "tax_revenue_excl_sc",
     }
     missing = expected.difference(df.columns)
     if missing:
@@ -54,7 +54,7 @@ def load_dataset(path: Path) -> pd.DataFrame:
     df["year"] = pd.to_numeric(df["year"], errors="coerce").astype("Int64")
     df["happiness_rank"] = pd.to_numeric(df["happiness_rank"], errors="coerce")
     df["life_evaluation_3yr_avg"] = pd.to_numeric(df["life_evaluation_3yr_avg"], errors="coerce")
-    df["sdg_index_score"] = pd.to_numeric(df["sdg_index_score"], errors="coerce")
+    df["tax_revenue_excl_sc"] = pd.to_numeric(df["tax_revenue_excl_sc"], errors="coerce")
     return df.dropna(subset=["country", "year"]).copy()
 
 
@@ -65,7 +65,12 @@ if not DATASET_PATH.exists():
     st.info("Run `python scripts/build_dashboard_dataset.py` first.")
     st.stop()
 
-df = load_dataset(DATASET_PATH)
+try:
+    df = load_dataset(DATASET_PATH)
+except ValueError as exc:
+    st.error(str(exc))
+    st.info("Run `python scripts/build_dashboard_dataset.py` to rebuild the dataset with tax data.")
+    st.stop()
 
 countries = ["All countries"] + sorted(df["country"].dropna().unique().tolist())
 years = sorted(df["year"].dropna().unique().tolist())
@@ -106,7 +111,7 @@ with main_col:
             "year": True,
             "happiness_rank": ":.0f",
             "life_evaluation_3yr_avg": ":.3f",
-            "sdg_index_score": ":.2f",
+            "tax_revenue_excl_sc": ":.2%",
             "iso3": False,
         }
 
@@ -175,19 +180,19 @@ with main_col:
 
         st.plotly_chart(line_fig, use_container_width=True)
 
-    st.subheader("Happiness Rank vs SDG Index Score")
+    st.subheader("Happiness Rank vs Tax Revenue (Excluding Social Contributions)")
 
-    scatter_df = year_df.dropna(subset=["happiness_rank", "sdg_index_score"]).copy()
+    scatter_df = year_df.dropna(subset=["happiness_rank", "tax_revenue_excl_sc"]).copy()
     if scatter_df.empty:
         st.warning("No scatterplot data for the selected year.")
     else:
         scatter_fig = px.scatter(
             scatter_df,
-            x="sdg_index_score",
+            x="tax_revenue_excl_sc",
             y="happiness_rank",
             hover_name="country",
             labels={
-                "sdg_index_score": "SDG index score",
+                "tax_revenue_excl_sc": "Tax revenue (excluding social contributions)",
                 "happiness_rank": "Happiness rank",
             },
             opacity=0.8,
@@ -199,13 +204,13 @@ with main_col:
             if not selected_scatter.empty:
                 scatter_fig.add_trace(
                     go.Scatter(
-                        x=selected_scatter["sdg_index_score"],
+                        x=selected_scatter["tax_revenue_excl_sc"],
                         y=selected_scatter["happiness_rank"],
                         mode="markers",
                         marker=dict(size=14, color="#D62828", line=dict(color="black", width=1)),
                         name=selected_country,
                         hovertemplate=(
-                            "<b>%{text}</b><br>SDG index score: %{x:.2f}<br>"
+                            "<b>%{text}</b><br>Tax revenue (excluding SC): %{x:.2%}<br>"
                             "Happiness rank: %{y:.0f}<extra></extra>"
                         ),
                         text=selected_scatter["country"],
@@ -221,6 +226,6 @@ st.caption(
     "Data sources: "
     "[World Happiness Report 2025 data](https://files.worldhappiness.report/WHR25_Data_Figure_2.1v3.xlsx) "
     "(sheet: Data for Figure 2.1) and "
-    "[Sustainable Development Report 2025 data](https://dashboards.sdgindex.org/static/downloads/files/SDR2025-data.xlsx) "
-    "(sheet: Backdated SDG Index)."
+    "[UNU-WIDER GRD 2025 data](https://www.wider.unu.edu/sites/default/files/Data/UNUWIDERGRD_2025.xlsx) "
+    "(sheet: General, column: Taxes Excluding SC)."
 )

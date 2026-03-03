@@ -4,7 +4,7 @@ This dashboard combines two global datasets to let you explore how countries per
 
 - **Happiness rank** (lower rank number is better)
 - **Life evaluation (3-year average)** from the World Happiness Report
-- **SDG index score** from the Sustainable Development Report
+- **Tax revenue (excluding social contributions)** from the UNU-WIDER Government Revenue Dataset
 
 ## What the metrics mean
 
@@ -12,19 +12,18 @@ This dashboard combines two global datasets to let you explore how countries per
 
 - **Life evaluation (3-year average)** is based on people's answers to the **Cantril Ladder** question (0 to 10), averaged over a three-year period to smooth annual volatility.
 - **Happiness rank** orders countries by their average life evaluation for each year.
-- The World Happiness Report emphasizes that rankings are based on reported life evaluations, not on a weighted wellbeing index assembled by the report team.
 
-### SDG Index metric
+### Tax metric (UNU-WIDER GRD)
 
-- **SDG index score** is a composite score used in the Sustainable Development Report.
-- It is scaled from **0 to 100**, where higher values indicate closer progress toward SDG targets.
-- The score is designed as a broad measure of distance to SDG achievement, not a direct measure of subjective wellbeing.
+- **Tax revenue (excluding social contributions)** is sourced from the GRD `General` sheet, tax column `Excluding SC`.
+- Values are recorded as a share of GDP (ratio). For example, `0.20` is 20% of GDP.
+- This is a fiscal structure indicator, not a direct measure of subjective wellbeing.
 
 ## How to read the visuals
 
 - **Map**: Shows country-level values for the selected year and selected metric.
 - **Time series**: Shows trends over time for one country, or the cross-country average when "All countries" is selected.
-- **Scatterplot**: Compares countries on **happiness rank vs SDG index score** for the selected year.
+- **Scatterplot**: Compares countries on **happiness rank vs tax revenue (excluding social contributions)** for the selected year.
 
 ## Interpretation notes
 
@@ -36,5 +35,5 @@ This dashboard combines two global datasets to let you explore how countries per
 
 - World Happiness Report (2025): https://www.worldhappiness.report/
 - WHR data page (Figure 2.1 data): https://www.worldhappiness.report/ed/2025/#appendices-and-data
-- Sustainable Development Report / SDG Index: https://dashboards.sdgindex.org/
-- SDR methodology: https://dashboards.sdgindex.org/chapters/methodology/
+- UNU-WIDER Government Revenue Dataset: https://www.wider.unu.edu/project/grd-government-revenue-dataset
+- GRD data file (2025): https://www.wider.unu.edu/sites/default/files/Data/UNUWIDERGRD_2025.xlsx
