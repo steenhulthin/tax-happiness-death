@@ -144,7 +144,7 @@ with main_col:
             margin=dict(l=0, r=0, t=0, b=0),
             coloraxis_colorbar_title=metric_config["label"],
         )
-        st.plotly_chart(map_fig, use_container_width=True)
+        st.plotly_chart(map_fig, width="stretch")
 
 if selected_country == "All countries":
     country_series = (
@@ -178,7 +178,7 @@ with main_col:
         if metric_config["ascending_good"]:
             line_fig.update_yaxes(autorange="reversed")
 
-        st.plotly_chart(line_fig, use_container_width=True)
+        st.plotly_chart(line_fig, width="stretch")
 
     st.subheader("Happiness Rank vs Tax Revenue (Excluding Social Contributions)")
 
@@ -219,7 +219,7 @@ with main_col:
 
         scatter_fig.update_layout(margin=dict(l=0, r=0, t=20, b=0))
         scatter_fig.update_yaxes(autorange="reversed")
-        st.plotly_chart(scatter_fig, use_container_width=True)
+        st.plotly_chart(scatter_fig, width="stretch")
 
 st.markdown("---")
 st.caption(
