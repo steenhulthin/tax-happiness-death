@@ -62,3 +62,10 @@ Then open the local Streamlit URL shown in your terminal (`http://localhost:2000
 
 - Country names are normalized during merge to align records across sources.
 - If the app says dataset is missing, run the build script first.
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+See the [LICENSE](LICENSE) file for the full license text.
+
+Excel files are not covered by the license. See links to data and terms of use for the data in the .md files with similar name.
